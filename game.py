@@ -11,6 +11,7 @@ class Game_Block:
 
     __user_level = 0
     __player = {'row': 0, 'col': 0}
+    player_rect = pygame.Rect(0,0,0,0)
     # ----------------------------------------------------------------------------#
 
     level1 = [[1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
@@ -130,8 +131,8 @@ class Game_Block:
         return c1, c2
 
     def get_status(self, m):
-        c1 = self.get_pos(m)[0]
-        c2 = self.get_pos(m)[1]
+        c1 = self.__player['row']
+        c2 = self.__player['col']
         c3, c4 = -1, -1
         for i in range(len(m)):
             for j in range(len(m[0])):
@@ -241,27 +242,58 @@ class Game_Block:
         # final_state=self.ender(user_level)
         self.__draw_level(screen, True)
 
-    def update_player_position(self, event, screen):
+    def update_player_position(self, event, __screen):
         # Move up with W or Up arrow
         num_rows = len(self.__user_level)
         num_cols = len(self.__user_level[0])
 
+        __state = self.get_status(self.__user_level)
+
         if event.key == pygame.K_UP or event.key == pygame.K_w:
-            if self.__player['row'] > 0 and self.__user_level[self.__player['row'] - 1][self.__player['col']] != 0:
+            direction = 'up'
+            op = self.operator_maker(direction, __state)
+            if op in self.legal_moves(self.__user_level):
+                out = self.string_appender(self.__user_level, op)
                 self.__player['row'] -= 1
+
+
+
         # Move down with S or Down arrow key
         elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
-            if self.__player['row'] < num_rows - 1 and self.__user_level[self.__player['row'] + 1][self.__player['col']] != 0:
+            direction = 'down'
+            op = self.operator_maker(direction, __state)
+            if op in self.legal_moves(self.__user_level):
+                out = self.string_appender(self.__user_level, op)
                 self.__player['row'] += 1
+
+
         # Move left with A or Left arrow key
         elif event.key == pygame.K_LEFT or event.key == pygame.K_a:
-            if self.__player['col'] > 0 and self.__user_level[self.__player['row']][self.__player['col'] - 1] != 0:
+            direction = 'left'
+            op = self.operator_maker(direction, __state)
+            if op in self.legal_moves(self.__user_level):
+                out = self.string_appender(self.__user_level, op)
                 self.__player['col'] -= 1
+
+
         # Move right with D or Right arrow key
         elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-            if self.__player['col'] < num_cols - 1 and self.__user_level[self.__player['row']][self.__player['col'] + 1] != 0:
-                self.__player['col'] += 1
-        self.__draw_level(screen)
+            direction = 'right'
+            op = self.operator_maker(direction, __state)
+            if op in self.legal_moves(self.__user_level):
+                out = self.string_appender(self.__user_level, op)
+                self.player_rect.move_ip(1, 0)
+                print("qqlmcoia")
+
+        print(out)
+        status = self.get_status(self.__user_level)
+        # player_size = {'width': square_size, 'height': square_size}
+        if status == 'vert':
+            self.player_rect.inflate_ip(0, 40 * 2)
+            # player_size = {'width': square_size, 'height': square_size*2}
+        elif status == 'horiz':
+            self.player_rect.inflate_ip(40 * 2, 0)
+        pygame.display.update()
     def __draw_level(self, screen, is_starting = False):
         square_size = 40
         num_rows = len(self.__user_level)
@@ -285,15 +317,20 @@ class Game_Block:
                 if is_starting:
                     # Draw the yellow starting position
                     if row == start_row and col == start_col:
-                        start_rect = pygame.Rect(col * square_size, row * square_size, square_size, square_size)
-                        pygame.draw.rect(screen, self.__yellow, start_rect)
+                        self.player_rect = pygame.Rect(col * square_size, row * square_size, square_size, square_size)
+                        pygame.draw.rect(screen, self.__yellow, self.player_rect)
                         self.__player['row'] = row
                         self.__player['col'] = col
 
                 else:
                     if row == self.__player['row'] and col == self.__player['col']:
-                        player_rect = pygame.Rect(col * square_size, row * square_size, square_size, square_size)
-                        pygame.draw.rect(screen, self.__yellow, player_rect)
+                        self.player_rect = pygame.Rect(col * square_size, row * square_size, square_size, square_size)
+                        pygame.draw.rect(screen, self.__yellow, self.player_rect)
+
+
+                            #player_size = {'width': square_size*2, 'height': square_size}
+                        #print(player_size)
+
 
     def up_stand(self, x, y, status, m):
         if x >= 2:
