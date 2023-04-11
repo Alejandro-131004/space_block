@@ -1,7 +1,16 @@
-
+import pygame
 class Game_Block:
 
+    __white = (255, 255, 255)
+    __light_grey = (200, 200, 200)
+    __black = (0, 0, 0)
+    __blue = (0, 122, 255)
+    __red = (255, 0, 0)
+    __grey = (128, 128, 128)
+    __yellow = (255, 255, 0)
 
+    __user_level = 0
+    __player = {'row': 0, 'col': 0}
     # ----------------------------------------------------------------------------#
 
     level1 = [[1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
@@ -221,17 +230,70 @@ class Game_Block:
             lvl = aux_9(lvl, x9, y9)
             printer(lvl)
             print(get_pos(lvl), get_status(lvl))'''
-    def set_level(self, level):
+    def set_level(self, level, screen):
         match level:
             case 1:
-                user_level = self.level1
+                self.__user_level = self.level1
             case 2:
-                user_level = self.level2
+                self.__user_level = self.level2
             case 3:
-                user_level = self.level3
-        final_state=self.ender(user_level)
-        self.printer(user_level)
+                self.__user_level = self.level3
+        # final_state=self.ender(user_level)
+        self.__draw_level(screen, True)
 
+    def update_player_position(self, event, screen):
+        # Move up with W or Up arrow
+        num_rows = len(self.__user_level)
+        num_cols = len(self.__user_level[0])
+
+        if event.key == pygame.K_UP or event.key == pygame.K_w:
+            if self.__player['row'] > 0 and self.__user_level[self.__player['row'] - 1][self.__player['col']] != 0:
+                self.__player['row'] -= 1
+        # Move down with S or Down arrow key
+        elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
+            if self.__player['row'] < num_rows - 1 and self.__user_level[self.__player['row'] + 1][self.__player['col']] != 0:
+                self.__player['row'] += 1
+        # Move left with A or Left arrow key
+        elif event.key == pygame.K_LEFT or event.key == pygame.K_a:
+            if self.__player['col'] > 0 and self.__user_level[self.__player['row']][self.__player['col'] - 1] != 0:
+                self.__player['col'] -= 1
+        # Move right with D or Right arrow key
+        elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+            if self.__player['col'] < num_cols - 1 and self.__user_level[self.__player['row']][self.__player['col'] + 1] != 0:
+                self.__player['col'] += 1
+        self.__draw_level(screen)
+    def __draw_level(self, screen, is_starting = False):
+        square_size = 40
+        num_rows = len(self.__user_level)
+        num_cols = len(self.__user_level[0])
+
+        start_row = self.get_pos(self.__user_level)[0]
+        start_col = self.get_pos(self.__user_level)[1]
+
+        for row in range(num_rows):
+            for col in range(num_cols):
+                square_color = self.__grey
+                if self.__user_level[row][col] == 0:
+                    square_color = self.__white
+                elif self.__user_level[row][col] == 1:
+                    square_color = self.__blue
+                elif self.__user_level[row][col] == 9:
+                    square_color = self.__red
+                rect = pygame.Rect(col * square_size, row * square_size, square_size, square_size)
+                pygame.draw.rect(screen, square_color, rect)
+
+                if is_starting:
+                    # Draw the yellow starting position
+                    if row == start_row and col == start_col:
+                        start_rect = pygame.Rect(col * square_size, row * square_size, square_size, square_size)
+                        pygame.draw.rect(screen, self.__yellow, start_rect)
+                        self.__player['row'] = row
+                        self.__player['col'] = col
+
+                else:
+                    if row == self.__player['row'] and col == self.__player['col']:
+                        player_rect = pygame.Rect(col * square_size, row * square_size, square_size, square_size)
+                        pygame.draw.rect(screen, self.__yellow, player_rect)
 
     def up_stand(self, x, y, status, m):
         if x >= 2:
