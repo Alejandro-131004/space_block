@@ -142,6 +142,7 @@ class Game_Block:
 
 
     def update_player_position(self, event, __screen):
+        end = [[j for j in i] for i in self.__ender(self.__user_level_temp)]
         stat = self.__get_status(self.__user_level)
         x, y = self.__get_pos(self.__user_level)
 
@@ -284,10 +285,12 @@ class Game_Block:
                         game_over = True
                 else:
                     game_over = True
-        print(str(game_over))
+        # print(str(game_over))
         if game_over == True:
             self.__user_level = [[j for j in i] for i in self.__user_level_temp]
         self.__draw_level(__screen)
+        if self.__user_level == end:
+            pygame.quit()
 
 
     def __draw_level(self, __screen):
