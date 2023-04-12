@@ -1,4 +1,6 @@
 import pygame
+import button
+
 class Game_Block:
     def __init__(self):
         self.x9 = None
@@ -13,10 +15,10 @@ class Game_Block:
     __yellow = (255, 255, 0)
 
     __user_level = 0
-
+    __user_level_temp = 0
     __player = {'row': 0, 'col': 0}
+    player_rect = pygame.Rect(0, 0, 0, 0)
     # ----------------------------------------------------------------------------#
-
     level1 = [[1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
               [1, 2, 1, 1, 1, 1, 0, 0, 0, 0],
               [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
@@ -41,8 +43,6 @@ class Game_Block:
               [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0],
               [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0],
               [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0]]
-
-
 
     # missing theoretical level 3 with buttons to bridges represented by 4, and will 2 live
     def printer(self, m):
@@ -221,7 +221,7 @@ class Game_Block:
             case 3:
                 self.__user_level = self.level3
         self.__save()
-        self.__draw_level(__screen, True)
+        self.__draw_level(__screen)
 
 
 
@@ -321,7 +321,7 @@ class Game_Block:
         self.__draw_level(__screen)
 
 
-    def __draw_level(self, __screen, is_starting = False):
+    def __draw_level(self, __screen):
         square_size = 40
         num_rows = len(self.__user_level)
         num_cols = len(self.__user_level[0])
@@ -346,150 +346,5 @@ class Game_Block:
 
                 rect = pygame.Rect(col * square_size, row * square_size, square_size, square_size)
                 pygame.draw.rect(__screen, square_color, rect)
-                '''
-                if row == self.b['row'] and col == self.b['col']:
-                    start_rect = pygame.Rect(col * square_size, row * square_size, square_size, square_size)
-                    pygame.draw.rect(__screen, self.__yellow, start_rect)'''
-                '''
-                if is_starting:
-                    # Draw the yellow starting position
-                    if row == start_row and col == start_col:
-                        start_rect = pygame.Rect(col * square_size, row * square_size, square_size, square_size)
-                        pygame.draw.rect(__screen, self.__yellow, start_rect)
-                        self.__player['row'] = row
-                        self.__player['col'] = col
 
-                else:
-                    if row == self.__player['row'] and col == self.__player['col']:
-                        player_rect = pygame.Rect(col * square_size, row * square_size, square_size, square_size)
-                        pygame.draw.rect(__screen, self.__yellow, player_rect)
-                '''
-    '''
-    def up_stand(self, x, y, status, m):
-        if x >= 2:
-            if status == 'stand' and m[x - 1][y] != 0 and m[x - 2][y] != 0:
-                m[x - 1][y] = 2
-                m[x - 2][y] = 2
-                m[x][y] = 1
-                status = 'vert'
-                return m, status  # returning now the status as well, an updating it. ask how to implement it
-        return None
 
-    def down_stand(self, x, y, status, m):
-        if x < len(m) - 2:
-            if status == 'stand' and m[x + 1][y] != 0 and m[x + 2][y] != 0:
-                m[x + 1][y] = 2
-                m[x + 2][y] = 2
-                m[x][y] = 1
-                status = 'vert'
-                return m, status
-        return None
-
-    def left_stand(self, x, y, status, m):
-        if y >= 2:
-            if status == 'stand' and m[x][y - 1] != 0 and m[x][y - 2] != 0:
-                m[x][y - 1] = 2
-                m[x][y - 2] = 2
-                m[x][y] = 1
-                status = 'horiz'
-                return m, status
-        return None
-
-    def right_stand(self, x, y, status, m):
-        if y < len(m[0]) - 2:
-            if status == 'stand' and m[x][y + 1] != 0 and m[x][y + 2] != 0:
-                m[x][y + 1] = 2
-                m[x][y + 2] = 2
-                m[x][y] = 1
-                status = 'horiz'
-                return m, status
-        return None
-
-    # ----------------------------------------------------------------------------#
-
-    def up_vert(self, x, y, status, m):
-        if x >= 1:
-            if status == 'vert' and m[x - 1][y] != 0:
-                m[x][y] = 1
-                m[x + 1][y] = 1
-                m[x - 1][y] = 2
-                status = 'stand'
-                return m, status
-        return None
-
-    def down_vert(self, x, y, status, m):
-        if x < len(m[0]) - 2:
-            if status == 'vert' and m[x + 2][y] != 0 and m[x + 1][y] != 0:
-                m[x][y] = 1
-                m[x + 1][y] = 1
-                m[x + 2][y] = 2
-                status = 'stand'
-                return m, status
-        return None
-
-    def left_vert(self, x, y, status, m):
-        if y >= 1:
-            if status == 'vert' and m[x][y - 1] != 0 and m[x + 1][y - 1] != 0:
-                m[x][y] = 1
-                m[x + 1][y] = 1
-                m[x][y - 1] = 2
-                m[x + 1][y - 1] = 2
-                status = status  # still vertical
-                return m, status
-        return None
-
-    def right_vert(self, x, y, status, m):
-        if y + 1 < len(m[0]):
-            if status == 'vert' and m[x][y + 1] != 0 and m[x + 1][y + 1] != 0:
-                m[x][y] = 1
-                m[x + 1][y] = 1
-                m[x][y + 1] = 2
-                m[x + 1][y + 1] = 2
-                status = status  # still vertical
-                return m, status
-        return None
-
-    # ----------------------------------------------------------------------------#
-
-    def up_horiz(self, x, y, status, m):
-        if x - 1 >= 0:
-            if status == 'horiz' and m[x - 1][y] != 0 and m[x - 1][y + 1] != 0:
-                m[x][y] = 1
-                m[x][y + 1] = 1
-                m[x - 1][y] = 2
-                m[x - 1][y + 1] = 2
-                status = status  # still horizontal
-                return m, status
-        return None
-
-    def down_horiz(self, x, y, status, m):
-        if x + 1 < len(m):
-            if status == 'horiz' and m[x + 1][y] != 0 and m[x + 1][y + 1] != 0:
-                m[x][y] = 1
-                m[x][y + 1] = 1
-                m[x + 1][y] = 2
-                m[x + 1][y + 1] = 2
-                status = status  # still horizontal
-                return m, status
-        return None
-
-    def left_horiz(self, x, y, status, m):
-        if y >= 1:
-            if status == 'horiz' and m[x][y - 1] != 0:
-                m[x][y] = 1
-                m[x][y + 1] = 1
-                m[x][y - 1] = 2
-                status = 'stand'
-                return m, status
-        return None
-
-    def right_horiz(self, x, y, status, m):
-        if y + 2 < len(m[0]):
-            if status == 'horiz' and m[x][y + 2] != 0:
-                m[x][y] = 1
-                m[x][y + 1] = 1
-                m[x][y + 2] = 2
-                status = 'stand'
-                return m, status
-        return None
-    '''
