@@ -15,7 +15,7 @@ class Game_Block:
     __yellow = (255, 255, 0)
 
     __user_level = 0
-    __user_level_temp = 0
+    __user_level_temp = []
     __player = {'row': 0, 'col': 0}
     player_rect = pygame.Rect(0, 0, 0, 0)
     # ----------------------------------------------------------------------------#
@@ -45,10 +45,6 @@ class Game_Block:
               [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0]]
 
     # missing theoretical level 3 with buttons to bridges represented by 4, and will 2 live
-    def printer(self, m):
-        for i in m:
-            print(i)
-        print("\n")  # matrix printer aux function
 
     def __ender(self, n):
         end = [[j for j in i] for i in n]
@@ -69,58 +65,6 @@ class Game_Block:
                     pos1 = i
                     pos2 = j
         return pos1, pos2
-
-    def __compare_states(self,initial_state, final_state):
-        for i in range(len(initial_state)):
-            for j in range(len(initial_state[0])):
-                if initial_state[i][j] != final_state[i][j]:
-                    return False
-        return True  # check for the right names when calling!!!
-
-    def __legal_moves(self,m):
-        stat = self.__get_status(m)
-        x, y = self.__get_pos(m)
-        l = []
-
-        if x >= 2:
-            if stat == 'stand' and m[x - 1][y] != 0 and m[x - 2][y] != 0:
-                l.append('up_stand')
-        if x < len(m) - 2:
-            if stat == 'stand' and m[x + 1][y] != 0 and m[x + 2][y] != 0:
-                l.append('down_stand')
-        if y >= 2:
-            if stat == 'stand' and m[x][y - 1] != 0 and m[x][y - 2] != 0:
-                l.append('left_stand')
-        if y < len(m[0]) - 2:
-            if stat == 'stand' and m[x][y + 1] != 0 and m[x][y + 2] != 0:
-                l.append('right_stand')
-        #####
-        if x >= 1:
-            if stat == 'vert' and m[x - 1][y] != 0:
-                l.append('up_vert')
-        if x < len(m) - 2:
-            if stat == 'vert' and m[x + 1][y] != 0 and m[x + 2][y] != 0:
-                l.append('down_vert')
-        if y >= 1:
-            if stat == 'vert' and m[x][y - 1] != 0 and m[x + 1][y - 1] != 0:
-                l.append('left_vert')
-        if y + 1 < len(m[0]):
-            if stat == 'vert' and m[x][y + 1] != 0 and m[x + 1][y + 1] != 0:
-                l.append('right_vert')
-        #####
-        if x - 1 >= 0:
-            if stat == 'horiz' and m[x - 1][y] != 0 and m[x - 1][y + 1] != 0:
-                l.append('up_horiz')
-        if x + 1 < len(m):
-            if stat == 'horiz' and m[x + 1][y] != 0 and m[x + 1][y + 1] != 0:
-                l.append('down_horiz')
-        if y >= 1:
-            if stat == 'horiz' and m[x][y - 1] != 0:
-                l.append('left_horiz')
-        if y + 2 < len(m[0]):
-            if stat == 'horiz' and m[x][y + 2] != 0:
-                l.append('right_horiz')
-        return l
 
     def __get_pos(self, m):
         global c1, c2
@@ -153,12 +97,6 @@ class Game_Block:
             return 'horiz'
 
     # Creation of the first instance of the block
-    def create_block(self, m):
-        c1 = self.__get_pos(m)[0]
-        c2 = self.__get_pos(m)[1]
-        stat = self.__get_status(m)
-        b = {'row':c1,'col':c2,'status':stat}
-        return b
 
     def __string_appender(self, m, operator):  # operator is the concatenation of direction_state
         if len(m) == 6:
@@ -184,29 +122,6 @@ class Game_Block:
             m[a][b] = 9
         return m
 
-    def __get_matrix(self, lvl, state):  # state is a tuple (x1,x2,status)
-        for i in range(len(lvl)):
-            for j in range(len(lvl[0])):
-                if lvl[i][j] == 2:
-                    lvl[i][j] = 1
-        x9 = self.__check_9(lvl)[0]
-        y9 = self.__check_9(lvl)[1]
-        lvl[x9][y9] = 9  # if block on the hole, not right,the hole would be deleted
-        a = int(state[0])
-        b = int(state[1])
-        lvl[a][b] = 2
-        status = state[2]
-        if status == 'stand':
-            return lvl
-        else:
-            if status == 'vert':
-                lvl[a + 1][b] = 2
-                return lvl
-            elif status == 'horiz':
-                lvl[a][b + 1] = 2
-                return lvl
-        return 404
-
     def __save(self):
         self.x9 = self.__check_9(self.__user_level)[0]
         self.y9 = self.__check_9(self.__user_level)[1]
@@ -221,6 +136,7 @@ class Game_Block:
             case 3:
                 self.__user_level = self.level3
         self.__save()
+        self.__user_level_temp = [[j for j in i] for i in self.__user_level]
         self.__draw_level(__screen)
 
 
@@ -229,6 +145,7 @@ class Game_Block:
         stat = self.__get_status(self.__user_level)
         x, y = self.__get_pos(self.__user_level)
 
+        game_over = False
         # Move up with W or Up arrow
         if event.key == pygame.K_UP or event.key == pygame.K_w:
             if stat == 'stand':
@@ -237,12 +154,20 @@ class Game_Block:
                         self.__user_level[x-1][y] = 2
                         self.__user_level[x-2][y] = 2
                         self.__user_level[x][y] = 1
+                    else:
+                        game_over = True
+                else:
+                    game_over = True
             elif stat == 'vert':
                 if x >= 1:
                     if stat == 'vert' and self.__user_level[x - 1][y] != 0:
                         self.__user_level[x][y] = 1
                         self.__user_level[x+1][y] = 1
                         self.__user_level[x-1][y] = 2
+                    else:
+                        game_over = True
+                else:
+                    game_over = True
             elif stat == 'horiz':
                 if x-1 >= 0:
                     if stat == 'horiz' and self.__user_level[x-1][y] != 0 and self.__user_level[x-1][y+1] != 0:
@@ -250,6 +175,10 @@ class Game_Block:
                         self.__user_level[x][y+1] = 1
                         self.__user_level[x-1][y] = 2
                         self.__user_level[x-1][y+1] = 2
+                    else:
+                        game_over = True
+                else:
+                    game_over = True
 
         # Move down with S or Down arrow key
         elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
@@ -259,12 +188,20 @@ class Game_Block:
                         self.__user_level[x+1][y] = 2
                         self.__user_level[x+2][y] = 2
                         self.__user_level[x][y] = 1
+                    else:
+                        game_over = True
+                else:
+                    game_over = True
             elif stat == 'vert':
                 if x < len(self.__user_level[0]) - 2:
                     if stat == 'vert' and self.__user_level[x+1][y] != 0 and self.__user_level[x+2][y] != 0:
                         self.__user_level[x][y] = 1
                         self.__user_level[x+1][y] = 1
                         self.__user_level[x+2][y] = 2
+                    else:
+                        game_over = True
+                else:
+                    game_over = True
             elif stat == 'horiz':
                 if x+1 < len(self.__user_level):
                     if stat == 'horiz' and self.__user_level[x+1][y] != 0 and self.__user_level[x+1][y+1] != 0:
@@ -272,6 +209,10 @@ class Game_Block:
                         self.__user_level[x][y+1] = 1
                         self.__user_level[x+1][y+1] = 2
                         self.__user_level[x+1][y] = 2
+                    else:
+                        game_over = True
+                else:
+                    game_over = True
 
         # Move left with A or Left arrow key
         elif event.key == pygame.K_LEFT or event.key == pygame.K_a:
@@ -281,6 +222,10 @@ class Game_Block:
                         self.__user_level[x][y-1] = 2
                         self.__user_level[x][y-2] = 2
                         self.__user_level[x][y] = 1
+                    else:
+                        game_over = True
+                else:
+                    game_over = True
             elif stat == 'vert':
                 if y>=1:
                     if stat == 'vert' and self.__user_level[x][y - 1] != 0 and self.__user_level[x + 1][y - 1] != 0:
@@ -288,6 +233,10 @@ class Game_Block:
                         self.__user_level[x + 1][y] = 1
                         self.__user_level[x][y - 1] = 2
                         self.__user_level[x + 1][y - 1] = 2
+                    else:
+                        game_over = True
+                else:
+                    game_over = True
             elif stat == 'horiz':
                 if y >= 1:
                     if stat == 'horiz' and self.__user_level[x][y - 1] != 0:
@@ -295,6 +244,10 @@ class Game_Block:
                         self.__user_level[x][y + 1] = 1
                         self.__user_level[x][y - 1] = 2
                         status = 'stand'
+                    else:
+                        game_over = True
+                else:
+                    game_over = True
 
         # Move right with D or Right arrow key
         elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
@@ -304,6 +257,10 @@ class Game_Block:
                         self.__user_level[x][y] = 1
                         self.__user_level[x][y+2] = 2
                         self.__user_level[x][y+1] = 2
+                    else:
+                        game_over = True
+                else:
+                    game_over = True
             elif stat == 'vert':
                 if y + 1 < len(self.__user_level[0]):
                     if stat == 'vert' and self.__user_level[x][y + 1] != 0 and self.__user_level[x + 1][y + 1] != 0:
@@ -311,6 +268,10 @@ class Game_Block:
                         self.__user_level[x + 1][y] = 1
                         self.__user_level[x][y + 1] = 2
                         self.__user_level[x + 1][y + 1] = 2
+                    else:
+                        game_over = True
+                else:
+                    game_over = True
             elif stat == 'horiz':
                 if y + 2 < len(self.__user_level[0]):
                     if stat == 'horiz' and self.__user_level[x][y + 2] != 0:
@@ -318,6 +279,12 @@ class Game_Block:
                         self.__user_level[x][y + 1] = 1
                         self.__user_level[x][y + 2] = 2
                         status = 'stand'
+                    else:
+                        game_over = True
+                else:
+                    game_over = True
+        if game_over:
+            self.__user_level = self.__user_level_temp
         self.__draw_level(__screen)
 
 

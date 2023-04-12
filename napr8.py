@@ -416,7 +416,6 @@ def clean_string(s):
             cleaned += str(c)
     return cleaned
 
-
 ####################
 
 
@@ -474,32 +473,6 @@ def get_heuristic(nivel, final):
                 h += abs(i - x) + abs(j - y)
     return h
 
-'''
-def astar(init, final, nivel):
-    start = time.time()  # record the start time of the search
-    move_sequence = ''  # initialize the move sequence as an empty string
-    frontier = [(init, move_sequence, 0)]  # initialize the frontier with the initial state, empty move sequence and the cost so far
-    visited = {init: 0}  # initialize the dictionary of visited states with the initial state and its cost so far
-    while len(frontier) > 0:  # continue while the frontier is not empty
-        # sort the frontier by f(n) = g(n) + h(n), where g(n) is the cost so far and h(n) is the estimated cost to the goal
-        frontier.sort(key=lambda x: len(x[1]) + get_heuristic(nivel, final))
-        state, move_sequence, cost_so_far = frontier.pop(0)  # remove the state with the lowest f(n) from the frontier
-        if compare_states2(state, final):  # check if the state is the final state
-            end = time.time()  # record the end time of the search
-            print('running time: ', end - start)  # print the running time of the search
-            return move_sequence  # return the move sequence that leads to the final state
-        else:
-            for legal in legal_moves(get_matrix(nivel, state)):  # generate all legal moves from the current state
-                new_state = apply_action(nivel, legal, state)  # apply a legal move to the current state to get a new state
-                new_move_sequence = move_sequence + legal  # generate a new move sequence that includes the current move
-                new_cost_so_far = cost_so_far + 1  # add the cost of the current move to the cost so far
-                if new_state not in visited or new_cost_so_far < visited[new_state]:  # check if the new state has not been visited before or if a shorter path to the new state has been found
-                    visited[new_state] = new_cost_so_far  # update the cost so far of the new state
-                    frontier.append((new_state, new_move_sequence, new_cost_so_far))  # add the new state, its move sequence and its cost so far to the frontier
-    return None  # return None if no solution is found
-
-
-'''
 
 lvl = int(input('Nivel: '))
 if lvl == 1:
@@ -519,15 +492,6 @@ if lvl == 1:
             print('No solution found.')
         else:
             print(extract_directions(x))
-            '''
-    else:
-        x = astar(init, final, level1)
-        if x is None:
-            print('No Solution found.')
-        else:
-            print(extract_directions(x))
-'''
-
 
 elif lvl == 2:
     level = create_block(level2)
@@ -547,13 +511,6 @@ elif lvl == 2:
             print('No solution found.')
         else:
             print(extract_directions(x))
-            '''
-    else:
-        x = astar(init, final, level1)
-        if x is None:
-            print('No Solution found.')
-        else:
-            print(extract_directions(x))'''
 
 elif lvl == 3:
     level = create_block(level3)
@@ -573,12 +530,6 @@ elif lvl == 3:
             print('No solution found.')
         else:
             print(extract_directions(x))
-            '''
-    else:
-        x = astar(init, final, level1)
-        if x is None:
-            print('No Solution found.')
-        else:
-            print(extract_directions(x))'''
+
 else:
     print('Invalid Level.')
