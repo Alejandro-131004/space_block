@@ -1,5 +1,5 @@
 import time
-__import__
+
 
 def printer(m):
     for i in m:
@@ -201,6 +201,8 @@ level3 = [[0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
           [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0],
           [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0],
           [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0]]
+
+
 
 def ender(n):
     end = [[j for j in i] for i in n]
@@ -418,7 +420,6 @@ def clean_string(s):
 
 ####################
 
-
 def bfs(init, final, nivel):
     start = time.time()
     move_sequence = ''
@@ -460,18 +461,8 @@ def dfs(init, final, nivel):
     return None  # return None if no solution is found
 
 
-def get_heuristic(nivel, final):
-    # calculate the sum of the Manhattan distances of each tile to its final position
-    h = 0
-    for i in range(len(nivel)):
-        for j in range(len(nivel[0])):
-            tile = nivel[i][j]
-            if tile != 0:
-                # find the position of the tile in the final state
-                x, y = divmod(final.index(tile), nivel)
-                # calculate the Manhattan distance between the current position and the final position of the tile
-                h += abs(i - x) + abs(j - y)
-    return h
+
+
 
 
 lvl = int(input('Nivel: '))
@@ -533,3 +524,5 @@ elif lvl == 3:
 
 else:
     print('Invalid Level.')
+
+

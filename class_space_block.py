@@ -8,6 +8,8 @@ class Space_Block_Windows(Enum):
     MENU = "menu"
     SEARCH = "search"
     GAME = "game"
+    CONGRATS = "congratulations"
+
 
 
 class Space_Block:
@@ -76,11 +78,7 @@ class Space_Block:
                 self.__level = level + 1
                 self.__check_window(Space_Block_Windows.MENU)
             case button.ButtonIdentifiers.SOLUTION:
-                self.__check_window(Space_Block_Windows.SEARCH)
-            case button.ButtonIdentifiers.BFS:
-                self.__check_window(Space_Block_Windows.GAME)
-            case button.ButtonIdentifiers.DFS:
-                self.__check_window(Space_Block_Windows.GAME)
+                self.__running = False
             case button.ButtonIdentifiers.BACK:
                 self.__check_window(Space_Block_Windows.LEVEL)
             case button.ButtonIdentifiers.EXIT:

@@ -9,6 +9,7 @@ class ButtonIdentifiers(Enum):
     EXIT = "exit"
     BFS = "bfs"
     DFS = "dfs"
+    CONGRATS = "congratulations"
 
 class Button:
     white = (255, 255, 255)

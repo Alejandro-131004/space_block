@@ -14,10 +14,12 @@ class Game_Block:
     __grey = (128, 128, 128)
     __yellow = (255, 255, 0)
 
+
     __user_level = 0
     __user_level_temp = []
     __player = {'row': 0, 'col': 0}
     player_rect = pygame.Rect(0, 0, 0, 0)
+
     # ----------------------------------------------------------------------------#
     level1 = [[1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
               [1, 2, 1, 1, 1, 1, 0, 0, 0, 0],
@@ -142,9 +144,14 @@ class Game_Block:
 
 
     def update_player_position(self, event, __screen):
-        end = [[j for j in i] for i in self.__ender(self.__user_level_temp)]
+        self.__end = [[j for j in i] for i in self.__ender(self.__user_level_temp)]
         stat = self.__get_status(self.__user_level)
         x, y = self.__get_pos(self.__user_level)
+
+        if self.__end==True:
+            __font = pygame.font.Font(None, 32)
+            __text_rect = __font.render('Congratulations', True, self.__blue)
+            return
 
         game_over = False
 
@@ -288,35 +295,36 @@ class Game_Block:
         # print(str(game_over))
         if game_over == True:
             self.__user_level = [[j for j in i] for i in self.__user_level_temp]
-        self.__draw_level(__screen)
-        if self.__user_level == end:
+        if self.__user_level == self.__end:
+            '''__font = pygame.font.Font(None, 32)
+            __text_rect = __font.render('Congratulations', True, self.__blue)'''
             pygame.quit()
-
-
+        self.__draw_level(__screen)
     def __draw_level(self, __screen):
-        square_size = 40
-        num_rows = len(self.__user_level)
-        num_cols = len(self.__user_level[0])
-        c = 0
-        # start_row = self.__get_pos(self.__user_level)[0]
-        # start_col = self.__get_pos(self.__user_level)[1]
+            square_size = 40
+            num_rows = len(self.__user_level)
+            num_cols = len(self.__user_level[0])
+            c = 0
+            # start_row = self.__get_pos(self.__user_level)[0]
+            # start_col = self.__get_pos(self.__user_level)[1]
 
-        for row in range(num_rows):
-            for col in range(num_cols):
-                square_color = self.__grey
-                if self.__user_level[row][col] == 0:
-                    square_color = self.__white
-                elif self.__user_level[row][col] == 1:
-                    square_color = self.__blue
-                elif self.__user_level[row][col] == 2:
-                    square_color = self.__yellow
-                elif self.__user_level[row][col] == 9:
-                    c += 1
-                    square_color = self.__red
-                if c == 0:
-                    self.__aux_9(self.__user_level, self.x9, self.y9)
+            for row in range(num_rows):
+                for col in range(num_cols):
+                    square_color = self.__grey
+                    if self.__user_level[row][col] == 0:
+                        square_color = self.__white
+                    elif self.__user_level[row][col] == 1:
+                        square_color = self.__blue
+                    elif self.__user_level[row][col] == 2:
+                        square_color = self.__yellow
+                    elif self.__user_level[row][col] == 9:
+                        c += 1
+                        square_color = self.__red
+                    if c == 0:
+                        self.__aux_9(self.__user_level, self.x9, self.y9)
 
-                rect = pygame.Rect(col * square_size, row * square_size, square_size, square_size)
-                pygame.draw.rect(__screen, square_color, rect)
+                    rect = pygame.Rect(col * square_size, row * square_size, square_size, square_size)
+                    pygame.draw.rect(__screen, square_color, rect)
+
 
 
