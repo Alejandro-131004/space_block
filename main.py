@@ -28,7 +28,7 @@ class Space_Block:
     def __setup_window(self):
         # Window size
         width, height = 600, 400
-        self.screen = pygame.display.set_mode((width, height))
+        self.__screen = pygame.display.set_mode((width, height))
 
     def __create_level_choice(self):
         self.__screen_buttons = [
@@ -37,7 +37,6 @@ class Space_Block:
             button.Button(self.__blue, 200, 225, 200, 50, "level", "Level 3"),
             button.Button(self.__red, 475, 300, 100, 50, "exit", "Exit")
         ]
-
 
 
     # play, solution, show level
@@ -74,10 +73,9 @@ class Space_Block:
                 self.__running = False
 
 
-
     def __check_window(self, window):
         self.__screen_buttons = []
-        self.screen.fill(self.__white)
+        self.__screen.fill(self.__white)
         match window:
             case "menu":
                 self.__create_menu_options()
@@ -86,16 +84,16 @@ class Space_Block:
             case "search":
                 self.__create_search_options()
             case "game":
-                self.__game_object.set_level(self.__level, self.screen)
+                self.__game_object.set_level(self.__level, self.__screen)
 
 
         for screen_button in self.__screen_buttons:
-            screen_button.draw(self.screen, self.__black)
+            screen_button.draw(self.__screen, self.__black)
 
         pygame.display.update()
 
     def __update_player_position(self, event):
-        self.__game_object.update_player_position(event, self.screen)
+        self.__game_object.update_player_position(event, self.__screen)
         pygame.display.update()
     def __listed_events(self):
         while self.__running:

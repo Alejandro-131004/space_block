@@ -429,7 +429,7 @@ def bfs(init, final, nivel):
         state, move_sequence = expand.pop(0)
         if compare_states2(state, final):
             end = time.time() # running time
-            print('running time: ', end - start)
+            print(f'running time: {round((end - start)*1000, 1)} ms')
             return move_sequence
         else:
             for legal in legal_moves(get_matrix(nivel, state)):
@@ -449,7 +449,7 @@ def dfs(init, final, nivel):
         state, move_sequence = stack.pop()  # remove the last state from the stack and get its move sequence
         if compare_states2(state, final):  # check if the state is the final state
             end = time.time()  # record the end time of the search
-            print('running time: ', end - start)  # print the running time of the search
+            print(f'running time: {round((end - start)*1000, 1)} ms') # print the running time of the search
             return move_sequence  # return the move sequence that leads to the final state
         else:
             for legal in legal_moves(get_matrix(nivel, state)):  # generate all legal moves from the current state
