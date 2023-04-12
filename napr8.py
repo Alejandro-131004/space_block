@@ -474,7 +474,7 @@ def get_heuristic(nivel, final):
                 h += abs(i - x) + abs(j - y)
     return h
 
-
+'''
 def astar(init, final, nivel):
     start = time.time()  # record the start time of the search
     move_sequence = ''  # initialize the move sequence as an empty string
@@ -499,14 +499,14 @@ def astar(init, final, nivel):
     return None  # return None if no solution is found
 
 
-
+'''
 
 lvl = int(input('Nivel: '))
 if lvl == 1:
     init = create_block(level1)
     final = create_block(ender(level1))
     print(init, final)
-    alg = int(input('1-BFS, 2-DFS, 3-A*Star: '))
+    alg = int(input('1-BFS, 2-DFS: '))
     if alg == 1:
         x = bfs(init, final, level1)
         if x is None:
@@ -519,13 +519,14 @@ if lvl == 1:
             print('No solution found.')
         else:
             print(extract_directions(x))
+            '''
     else:
         x = astar(init, final, level1)
         if x is None:
             print('No Solution found.')
         else:
             print(extract_directions(x))
-
+'''
 
 
 elif lvl == 2:
@@ -533,7 +534,7 @@ elif lvl == 2:
     init = create_block(level2)
     final = create_block(ender(level2))
     print(init, final)
-    alg = int(input('1-BFS, 2-DFS, 3-A*Star: '))
+    alg = int(input('1-BFS, 2-DFS: '))
     if alg == 1:
         x = bfs(init, final, level2)
         if x is None:
@@ -546,19 +547,20 @@ elif lvl == 2:
             print('No solution found.')
         else:
             print(extract_directions(x))
+            '''
     else:
         x = astar(init, final, level1)
         if x is None:
             print('No Solution found.')
         else:
-            print(extract_directions(x))
+            print(extract_directions(x))'''
 
 elif lvl == 3:
     level = create_block(level3)
     init = create_block(level3)
     final = create_block(ender(level3))
     print(init, final)
-    alg = int(input('1-BFS, 2-DFS, 3-A*Star: '))
+    alg = int(input('1-BFS, 2-DFS: '))
     if alg == 1:
         x = bfs(init, final, level3)
         if x is None:
@@ -571,11 +573,12 @@ elif lvl == 3:
             print('No solution found.')
         else:
             print(extract_directions(x))
+            '''
     else:
         x = astar(init, final, level1)
         if x is None:
             print('No Solution found.')
         else:
-            print(extract_directions(x))
+            print(extract_directions(x))'''
 else:
     print('Invalid Level.')
