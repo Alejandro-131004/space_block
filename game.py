@@ -146,6 +146,7 @@ class Game_Block:
         x, y = self.__get_pos(self.__user_level)
 
         game_over = False
+
         # Move up with W or Up arrow
         if event.key == pygame.K_UP or event.key == pygame.K_w:
             if stat == 'stand':
@@ -283,8 +284,9 @@ class Game_Block:
                         game_over = True
                 else:
                     game_over = True
-        if game_over:
-            self.__user_level = self.__user_level_temp
+        print(str(game_over))
+        if game_over == True:
+            self.__user_level = [[j for j in i] for i in self.__user_level_temp]
         self.__draw_level(__screen)
 
 
@@ -309,7 +311,7 @@ class Game_Block:
                     c += 1
                     square_color = self.__red
                 if c == 0:
-                    self.__aux_9(self.__user_level, self.x9, self.y9) #####################!!!!!!!!
+                    self.__aux_9(self.__user_level, self.x9, self.y9)
 
                 rect = pygame.Rect(col * square_size, row * square_size, square_size, square_size)
                 pygame.draw.rect(__screen, square_color, rect)
