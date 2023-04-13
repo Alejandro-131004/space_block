@@ -9,7 +9,7 @@ class Space_Block_Windows(Enum):
     MENU = "menu"
     SEARCH = "search"
     GAME = "game"
-    CONGRATS = "congratulations"
+
 
 
 
@@ -67,6 +67,7 @@ class Space_Block:
         self.__screen_buttons = [
             button.Button(self.__blue, 50, 75, 200, 50, button.ButtonIdentifiers.BFS, "BFS"),
             button.Button(self.__blue, 50, 150, 200, 50, button.ButtonIdentifiers.DFS, "DFS"),
+            button.Button(self.__blue, 50, 225, 200, 50, button.ButtonIdentifiers.DFS, "A* STAR"),
             button.Button(self.__red, -20, 325, 340, 25, button.ButtonIdentifiers.BACK, "Back")
         ]
 
@@ -84,6 +85,9 @@ class Space_Block:
                 self.__running = False
                 search.Solution(self.__level, identifier)
             case button.ButtonIdentifiers.DFS:
+                self.__running = False
+                search.Solution(self.__level, identifier)
+            case button.ButtonIdentifiers.ASTAR:
                 self.__running = False
                 search.Solution(self.__level, identifier)
             case button.ButtonIdentifiers.BACK:

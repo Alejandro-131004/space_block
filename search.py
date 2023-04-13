@@ -477,6 +477,14 @@ class Solution:
                     x = self.dfs(init, final, Solution.level2)
                 if level_chosen == [[j for j in i] for i in self.level3]:
                     x = self.dfs(init, final, Solution.level3)
+            case button.ButtonIdentifiers.ASTAR:
+                if level_chosen == [[j for j in i] for i in self.level1]:
+                    x = self.astar(init, final, Solution.level1)
+                if level_chosen == [[j for j in i] for i in self.level2]:
+                    x = self.astar(init, final, Solution.level2)
+                if level_chosen == [[j for j in i] for i in self.level3]:
+                    
+
         if x is None:
             print('No solution found.')
         else:
