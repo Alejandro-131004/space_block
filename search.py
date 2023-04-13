@@ -448,23 +448,35 @@ class Solution:
         return None  # return None if no solution is found
 
     def start_game(self, lvl, alg):
-
         match lvl:
             case 1:
-                level = self.level1
+                level_chosen = [[j for j in i] for i in self.level1]
             case 2:
-                level = self.level2
+                level_chosen = [[j for j in i] for i in self.level2]
             case 3:
-                level = self.level3
+                level_chosen = [[j for j in i] for i in self.level3]
 
-        init = self.create_block(level)
-        final = self.create_block(self.ender(level))
+        for x in level_chosen:
+            print(x)
+        init = self.create_block(level_chosen)
+        final = self.create_block(self.ender(level_chosen))
+        print(init, final)
 
         match alg:
             case button.ButtonIdentifiers.BFS:
-                x = self.bfs(init, final, self.level1)
+                if level_chosen == [[j for j in i] for i in self.level1]:
+                    x = self.bfs(init, final, Solution.level1)
+                if level_chosen == [[j for j in i] for i in self.level2]:
+                    x = self.bfs(init, final, Solution.level2)
+                if level_chosen == [[j for j in i] for i in self.level3]:
+                    x = self.bfs(init, final, Solution.level3)
             case button.ButtonIdentifiers.DFS:
-                x = self.dfs(init, final, self.level1)
+                if level_chosen == [[j for j in i] for i in self.level1]:
+                    x = self.dfs(init, final, Solution.level1)
+                if level_chosen == [[j for j in i] for i in self.level2]:
+                    x = self.dfs(init, final, Solution.level2)
+                if level_chosen == [[j for j in i] for i in self.level3]:
+                    x = self.dfs(init, final, Solution.level3)
         if x is None:
             print('No solution found.')
         else:
