@@ -1,6 +1,7 @@
 import game
 import pygame
 import button
+import search
 from enum import Enum
 
 class Space_Block_Windows(Enum):
@@ -78,7 +79,13 @@ class Space_Block:
                 self.__level = level + 1
                 self.__check_window(Space_Block_Windows.MENU)
             case button.ButtonIdentifiers.SOLUTION:
+                self.__check_window(Space_Block_Windows.SEARCH)
+            case button.ButtonIdentifiers.BFS:
                 self.__running = False
+                search.Solution(self.__level, identifier)
+            case button.ButtonIdentifiers.DFS:
+                self.__running = False
+                search.Solution(self.__level, identifier)
             case button.ButtonIdentifiers.BACK:
                 self.__check_window(Space_Block_Windows.LEVEL)
             case button.ButtonIdentifiers.EXIT:
