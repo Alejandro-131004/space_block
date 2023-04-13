@@ -2,10 +2,13 @@ import pygame
 import button
 
 class Game_Block:
+
+    #this x9 and y9 are the ones that save permanently the position of the 9 (later funtions work with that)
     def __init__(self):
         self.x9 = None
         self.y9 = None
 
+    # color
     __white = (255, 255, 255)
     __light_grey = (200, 200, 200)
     __black = (0, 0, 0)
@@ -14,13 +17,14 @@ class Game_Block:
     __grey = (128, 128, 128)
     __yellow = (255, 255, 0)
 
-
+    # variable definition
     __user_level = 0
     __user_level_temp = []
     __player = {'row': 0, 'col': 0}
     player_rect = pygame.Rect(0, 0, 0, 0)
 
     # ----------------------------------------------------------------------------#
+    # levels
     level1 = [[1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
               [1, 2, 1, 1, 1, 1, 0, 0, 0, 0],
               [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
@@ -48,6 +52,7 @@ class Game_Block:
 
     # missing theoretical level 3 with buttons to bridges represented by 4, and will 2 live
 
+    # returns end, the objective matrix, given the starting matrix
     def __ender(self, n):
         end = [[j for j in i] for i in n]
         # given a certain matrix, returns the ending one
@@ -56,10 +61,11 @@ class Game_Block:
                 if end[i][j] == 2:
                     end[i][j] = 1
                 if end[i][j] == 9:
-                    end[i][j] = 2  # end will be the objective matrix, since the beggining point will be a 1, and the ending 9 will be the last pos of the block
+                    end[i][j] = 2
         return end  # end matrix
 
-    def __check_9(self,m): # this function checks if the number in the matrix is a 9 and returns the coordinates
+    # this function checks if the number in the matrix is a 9 and returns the coordinates
+    def __check_9(self,m):
         pos1, pos2 = 0, 0
         for i in range(len(m)):
             for j in range(len(m[0])):
@@ -68,6 +74,7 @@ class Game_Block:
                     pos2 = j
         return pos1, pos2
 
+    # given the matrix, returns the current position of the block
     def __get_pos(self, m):
         global c1, c2
         for i in range(len(m)):
@@ -81,6 +88,7 @@ class Game_Block:
             break  # explanation on mar18/19
         return c1, c2
 
+    # gets the current status (standind, laying horizontally or not), given the matrix
     def __get_status(self, m):
         c1 = self.__get_pos(m)[0]
         c2 = self.__get_pos(m)[1]
@@ -98,8 +106,7 @@ class Game_Block:
                 return 'vert'
             return 'horiz'
 
-    # Creation of the first instance of the block
-
+    # returns a string, that is going to be executed after
     def __string_appender(self, m, operator):  # operator is the concatenation of direction_state
         if len(m) == 6:
             if len(m[0]) == 10:
@@ -115,16 +122,19 @@ class Game_Block:
         out = 'self.b.' + operator + '(' + str(c1) + ',' + str(c2) + ",'" + stat + "'," + 'level' + str(temp) + ')'
         return out  # to execute out later, exec(out)
 
+    # concatenates the operation (ex.: up_stand)
     def __operator_maker(self, a, b):
         c = str(a) + '_' + str(b)  # a=direction, b=state
         return c
 
+    # together with the private __check_9, changes the matrix if no 9 is found, happened when the block passed on the
+    # 9 but not in the right position
     def __aux_9(self, m, a, b):
         if m[a][b] == 1:
             m[a][b] = 9
         return m
 
-    # this function keeps the number 9 in order to finish the game
+    # this function keeps the number 9 in order to finish the game (updates them)
     def __save(self):
         self.x9 = self.__check_9(self.__user_level)[0]
         self.y9 = self.__check_9(self.__user_level)[1]

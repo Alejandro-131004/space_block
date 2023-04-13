@@ -3,7 +3,7 @@ import button
 
 
 class Block:
-
+    # adapted from notebook, not entirely used
     def __init__(self, x, y, status):
         self.x = x
         self.y = y
@@ -21,8 +21,6 @@ class Block:
 
     def __hash__(self):
         return hash((self.x, self.y, self.status))
-
-    ''' - '''
 
     def __str__(self):
         return "(" + str(self.x) + ", " + str(self.y) + ", " + str(self.status) + ")"
@@ -42,7 +40,7 @@ class Block:
 
     # ----------------------------------------------------------------------------#
 
-
+# solution class
 class Solution:
     def __init__(self, level, alg):
         self.start_game(level, alg)
@@ -72,6 +70,7 @@ class Solution:
               [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0],
               [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0]]
 
+    # operators
     def up_stand(self, x, y, status, m):
         if x >= 2:
             if status == 'stand' and m[x - 1][y] != 0 and m[x - 2][y] != 0:
@@ -200,6 +199,9 @@ class Solution:
                 return m, status
         return None
 
+    #---------#
+
+    # some of these functions were explained previously on game.py
     def ender(self, n):
         end = [[j for j in i] for i in n]
         # given a certain matrix, returns the ending one
@@ -212,6 +214,7 @@ class Solution:
                         j] = 2  # end will be the objective matrix, since the beggining point will be a 1, and the ending 9 will be the last pos of the block
         return end  # end matrix
 
+    # explained
     def check_9(self, m):
         pos1, pos2 = 0, 0
         for i in range(len(m)):
@@ -222,6 +225,7 @@ class Solution:
         # returns the position of the 9
         return pos1, pos2
 
+    # compares states, given 2 matrices
     def compare_states(self, initial_state, final_state):
         for i in range(len(initial_state)):
             for j in range(len(initial_state[0])):
@@ -229,6 +233,7 @@ class Solution:
                     return False
         return True  # check for the right names when calling!!!
 
+    # returns a list of the legal moves, given the matrix
     def legal_moves(self, m):
         stat = self.get_status(m)
         x, y = self.get_pos(m)
@@ -274,6 +279,7 @@ class Solution:
                 l.append('right_horiz')
         return l
 
+    # explained
     def get_status(self, m):
         c1 = self.get_pos(m)[0]
         c2 = self.get_pos(m)[1]
@@ -291,6 +297,7 @@ class Solution:
                 return 'vert'
             return 'horiz'
 
+    # explained
     def get_pos(self, m):
         global c1, c2
         for i in range(len(m)):
@@ -304,12 +311,6 @@ class Solution:
             break  # explanation on mar18/19
         return c1, c2
 
-    # This changes when in the graphic environment a level is chosen by the program user.
-    def sizer(self, m):
-        rows = len(m)
-        cols = len(m[0])
-        return rows, cols
-
     # Creation of the first instance of the block
     def create_block(self, m):
         c1 = self.get_pos(m)[0]
@@ -318,6 +319,7 @@ class Solution:
         self.b = Block(c1, c2, stat)
         return self.b
 
+    # explained
     def string_appender(self, m, operator):  # operator is the concatenation of direction_state
         if len(m) == 6:
             if len(m[0]) == 10:
@@ -333,15 +335,18 @@ class Solution:
         out = 'self.' + operator + '(' + str(c1) + ',' + str(c2) + ",'" + stat + "'," + 'self.level' + str(temp) + ')'
         return out  # to execute out later, exec(out)
 
+    # explained
     def operator_maker(self, a, b):
         c = str(a) + '_' + str(b)  # a=direction, b=state
         return c
 
+    # explained
     def aux_9(self, m, a, b):
         if m[a][b] == 1:
             m[a][b] = 9
         return m
 
+    # extract the directions from the very confusing string from the search algorithm
     def extract_directions(self, input_string):
         directions = []
         input_list = input_string.split("_")
@@ -357,6 +362,7 @@ class Solution:
         print(f"Amount of directions: {len(directions)}")
         return " -> ".join(directions)
 
+    # given the tuple of the state (x, y, status), the operator
     def apply_action(self, z, op, state):
         m = self.get_matrix(z, state)  # z is the lvl
         out = self.string_appender(m, op)
@@ -364,6 +370,7 @@ class Solution:
         r = (self.get_pos(m)[0], self.get_pos(m)[1], self.get_status(m))
         return r
 
+    # gets matrix from the tuple
     def get_matrix(self, lvl, state):  # state is a tuple (x1,x2,status)
         for i in range(len(lvl)):
             for j in range(len(lvl[0])):
@@ -387,6 +394,7 @@ class Solution:
                 return lvl
         return 404
 
+    # instead of comparing matrices, compare the tuples
     def compare_states2(self, a, b):
         # compare_states2 check the tuple, not the matrix, temporary
         a1 = self.clean_string(a)
@@ -395,6 +403,7 @@ class Solution:
             return True
         return False
 
+    # compliment to compare_states2
     def clean_string(self, s):
         cleaned = ''
         for c in s:
@@ -404,6 +413,7 @@ class Solution:
 
     ####################
 
+    # breadth-first search algorithm implementation
     def bfs(self, init, final, level):
         start = time.time()
         move_sequence = ''
@@ -424,6 +434,7 @@ class Solution:
                         expand.append((new_state, new_move_sequence))
                         # to not forget that extract_directions
 
+    # depth-first search algorithm implementation
     def dfs(self, init, final, nivel):
         start = time.time()  # record the start time of the search
         move_sequence = ''  # initialize the move sequence as an empty string
@@ -447,6 +458,7 @@ class Solution:
                             (new_state, new_move_sequence))  # add the new state and its move sequence to the stack
         return None  # return None if no solution is found
 
+    # heuristic
     def manhattan_distance(self, state, final):
         """
         Calculates the Manhattan distance between two states.
@@ -463,6 +475,7 @@ class Solution:
 
         return distance
 
+    # a* search algorithm implementation
     def astar(self, init, final, nivel):
         start = time.time()
         move_sequence = ''
@@ -485,6 +498,7 @@ class Solution:
                         expand.append((new_state, new_move_sequence, new_f_score))
         return None
 
+    # starts the search, compliment to other class
     def start_game(self, lvl, alg):
         match lvl:
             case 1:

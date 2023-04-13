@@ -146,7 +146,7 @@ class Space_Block:
         pygame.display.update()
         self.__active_window = window
 
-    # this updates the player position
+    # this updates the matrix / player position
     def __update_player_position(self, event):
         self.__game_object.update_player_position(event, self.screen)
         pygame.display.update()
