@@ -4,6 +4,7 @@ import button
 import search
 from enum import Enum
 
+# same as the class ButtonIdentifiers in the button file
 class Space_Block_Windows(Enum):
     LEVEL = "level"
     MENU = "menu"
@@ -29,6 +30,7 @@ class Space_Block:
     __screen_buttons = []
     __level = -1
 
+    # this initializes the class with the title of the game and the size of the buttons
     def __init__(self):
 
         pygame.init()
@@ -37,11 +39,13 @@ class Space_Block:
         self.__check_window(Space_Block_Windows.LEVEL)
         self.__listed_events()
 
+    # this sets up the window that you see when you run the code
     def __setup_window(self, width, height):
 
         self.screen = pygame.display.set_mode((width, height))
         self.screen.fill(self.__white)
 
+    # this creates the buttons for the first menu with the levels to choose, with a text "Choose a level to start"
     def __create_level_choice(self):
 
         self.__text = self.__font.render('Choose a level to start', True, self.__black)
@@ -52,6 +56,7 @@ class Space_Block:
             button.Button(self.__blue, 50, 225, 200, 50, button.ButtonIdentifiers.LEVEL, "Level 3")
         ]
 
+    # this creates the buttons for the second menu to play or the solution to the level, with a text "Select an option"
     def __create_menu_options(self):
 
         self.__text = self.__font.render('Select an option', True, self.__black)
@@ -62,7 +67,10 @@ class Space_Block:
             button.Button(self.__red, -20, 250, 340, 25, button.ButtonIdentifiers.BACK, "Back")
         ]
 
+    # this creates the buttons for the third menu to the search algorithms to choose, with a text "Select an option"
     def __create_search_options(self):
+
+        self.__text = self.__font.render('Select an option', True, self.__black)
 
         self.__screen_buttons = [
             button.Button(self.__blue, 50, 75, 200, 50, button.ButtonIdentifiers.BFS, "BFS"),
@@ -71,6 +79,7 @@ class Space_Block:
             button.Button(self.__red, -20, 325, 340, 25, button.ButtonIdentifiers.BACK, "Back")
         ]
 
+    # this checks what button is pressed and when it is, a certain action will happen
     def __check_button(self, identifier: button.ButtonIdentifiers, level):
 
         match identifier:
@@ -95,6 +104,7 @@ class Space_Block:
             case button.ButtonIdentifiers.EXIT:
                 self.__running = False
 
+    # this sets up the window according to different levels
     def __start_game(self):
 
         if self.__level == 1:
@@ -108,6 +118,7 @@ class Space_Block:
 
         self.__text = self.__font.render('', True, self.__black)
 
+    # this sets up the window according to the different buttons pressed and updates the screen when it happens
     def __check_window(self, window: Space_Block_Windows):
 
         self.__screen_buttons = []
@@ -135,10 +146,12 @@ class Space_Block:
         pygame.display.update()
         self.__active_window = window
 
+    # this updates the player position
     def __update_player_position(self, event):
         self.__game_object.update_player_position(event, self.screen)
         pygame.display.update()
 
+    # this is a main loop to the different buttons pressed and the movement of the block
     def __listed_events(self):
         while self.__running:
             for event in pygame.event.get():

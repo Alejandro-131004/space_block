@@ -59,7 +59,7 @@ class Game_Block:
                     end[i][j] = 2  # end will be the objective matrix, since the beggining point will be a 1, and the ending 9 will be the last pos of the block
         return end  # end matrix
 
-    def __check_9(self,m):
+    def __check_9(self,m): # this function checks if the number in the matrix is a 9 and returns the coordinates
         pos1, pos2 = 0, 0
         for i in range(len(m)):
             for j in range(len(m[0])):
@@ -124,11 +124,12 @@ class Game_Block:
             m[a][b] = 9
         return m
 
+    # this function keeps the number 9 in order to finish the game
     def __save(self):
         self.x9 = self.__check_9(self.__user_level)[0]
         self.y9 = self.__check_9(self.__user_level)[1]
 
-
+    # this function sets the level you pick
     def set_level(self, level, __screen):
         match level:
             case 1:
@@ -142,7 +143,7 @@ class Game_Block:
         self.__draw_level(__screen)
 
 
-
+    # this function works with the movement of the block
     def update_player_position(self, event, __screen):
         self.__end = [[j for j in i] for i in self.__ender(self.__user_level_temp)]
         stat = self.__get_status(self.__user_level)
@@ -292,21 +293,19 @@ class Game_Block:
                         game_over = True
                 else:
                     game_over = True
-        # print(str(game_over))
+
         if game_over == True:
             self.__user_level = [[j for j in i] for i in self.__user_level_temp]
         if self.__user_level == self.__end:
-            '''__font = pygame.font.Font(None, 32)
-            __text_rect = __font.render('Congratulations', True, self.__blue)'''
             pygame.quit()
         self.__draw_level(__screen)
+
+    # this function draw´s the levels and the block
     def __draw_level(self, __screen):
             square_size = 40
             num_rows = len(self.__user_level)
             num_cols = len(self.__user_level[0])
             c = 0
-            # start_row = self.__get_pos(self.__user_level)[0]
-            # start_col = self.__get_pos(self.__user_level)[1]
 
             for row in range(num_rows):
                 for col in range(num_cols):
