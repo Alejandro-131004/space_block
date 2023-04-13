@@ -447,6 +447,44 @@ class Solution:
                             (new_state, new_move_sequence))  # add the new state and its move sequence to the stack
         return None  # return None if no solution is found
 
+    def manhattan_distance(self, state, final):
+        """
+        Calculates the Manhattan distance between two states.
+        """
+        distance1 = abs(int(state[0]) - int(final[0])) + abs(int(state[1]) - int(final[1]))
+        if state[2] == 'stand':
+            distance = distance1-1
+        elif state[2] == 'vert':
+            distance2 = abs(int(state[0] + 1) - int(final[0]) + 1) + abs(int(state[1]) - int(final[1]))
+            distance = min(distance1, distance2)
+        elif state[2] == 'horiz':
+            distance2 = abs(int(state[0]) - int(final[0])) + abs(int(state[1] + 1) - int(final[1]) + 1)
+            distance = min(distance1, distance2)
+
+        return distance
+
+    def astar(self, init, final, nivel):
+        start = time.time()
+        move_sequence = ''
+        expand = [(init, move_sequence, self.manhattan_distance(init,final))]  # expand is the queue, each element is a tuple of (state, move_sequence, f_score)
+        visited = {init: self.manhattan_distance(init, final)}
+        while len(expand) > 0:
+            expand.sort(key=lambda x: x[2])  # sort the queue by f_score
+            state, move_sequence, f_score = expand.pop(0)
+            if self.compare_states2(state, final):
+                end = time.time()  # running time
+                print(f'running time: {round((end - start) * 1000, 1)} ms')
+                return move_sequence
+            else:
+                for legal in self.legal_moves(self.get_matrix(nivel, state)):
+                    new_state = self.apply_action(nivel, legal, state)
+                    new_move_sequence = move_sequence + legal
+                    new_f_score = self.manhattan_distance(new_state, final) + len(new_move_sequence)  # calculate f_score for the new state
+                    if new_state not in visited or new_f_score < visited[new_state]:
+                        visited[new_state] = new_f_score
+                        expand.append((new_state, new_move_sequence, new_f_score))
+        return None
+
     def start_game(self, lvl, alg):
         match lvl:
             case 1:
@@ -483,7 +521,8 @@ class Solution:
                 if level_chosen == [[j for j in i] for i in self.level2]:
                     x = self.astar(init, final, Solution.level2)
                 if level_chosen == [[j for j in i] for i in self.level3]:
-                    
+                    x = self.astar(init, final, Solution.level3)
+
 
         if x is None:
             print('No solution found.')
